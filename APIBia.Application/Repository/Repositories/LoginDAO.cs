@@ -52,48 +52,5 @@ namespace APIBia.Application.Repository.Repositories
                       WHERE USER_LOGIN = @UserLogin AND PASSWORD = @Password", new { request.UserLogin, request.Password });
             }
         }
-
-        //public string ConnectionString { get; set; }
-
-        //public LoginDAO(string connectionString)
-        //{
-        //    this.ConnectionString = connectionString;
-        //}
-
-        //private MySqlConnection GetConnection()
-        //{
-        //    return new MySqlConnection(ConnectionString);
-        //}
-
-        //public LoginResponse Find(LoginRequest request)
-        //{
-        //    LoginResponse response = new LoginResponse();
-
-        //    using (MySqlConnection conn = GetConnection())
-        //    {
-        //        string Query = string.Format(@"SELECT * FROM LOGIN WHERE USER_LOGIN = {0} AND PASSWORD = {1};", request.UserLogin, request.Password);
-
-        //        conn.Open();
-        //        MySqlCommand cmd = new MySqlCommand(Query, conn);
-
-        //        using (var reader = cmd.ExecuteReader())
-        //        {
-        //            while (reader.Read())
-        //            {
-        //                response = new LoginResponse()
-        //                {
-        //                    UserID = Convert.ToInt32(reader["ID_LOGIN"].ToString()),
-        //                    Password = reader["PASSWORD"].ToString(),
-        //                    UserLogin = reader["USER_LOGIN"].ToString(),
-        //                    Name = reader["NAME"].ToString(),
-        //                    CreateDate = Convert.ToDateTime(reader["CREATE_DATE"].ToString()),
-        //                    Active = (bool)reader["ACTIVE"]
-        //                };
-        //            }
-        //        }
-        //    }
-
-        //    return response;
-        //}
     }
 }

@@ -14,7 +14,6 @@ namespace APIBia.Application.Entities
         [Required]
         public string USER_LOGIN { get; set; }
         [Required]
-
         public string NAME { get; set; }
         public DateTime? CREATE_DATE { get; set; }
         public bool ACTIVE { get; set; }
