@@ -19,6 +19,19 @@ namespace APIBia.Controllers
     [Route("api/[controller]")]
     public class AuthController : Controller
     {
+        private readonly AuthenticateRepository _authenticateRepository;
+        private readonly SigningConfigurations _signingConfigurations;
+        private readonly TokenConfiguration _tokenConfiguration;
+
+        public AuthController(AuthenticateRepository authenticateRepository,
+                              SigningConfigurations signingConfigurations,
+                              TokenConfiguration tokenConfiguration)
+        {
+            _authenticateRepository = authenticateRepository;
+            _signingConfigurations = signingConfigurations;
+            _tokenConfiguration = tokenConfiguration;
+        }        
+
         /// <summary>
         /// Obtem Token de Autenticação
         /// </summary>
@@ -37,45 +50,40 @@ namespace APIBia.Controllers
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         [ProducesResponseType(typeof(AuthenticateResponse), (int)HttpStatusCode.OK)]
-        public IActionResult Post(
-            [FromBody] AuthenticateRequest usuario,
-            [FromServices]AuthenticateDAO usersDAO,
-            [FromServices]SigningConfigurations signingConfigurations,
-            [FromServices]TokenConfiguration tokenConfigurations)
+        public IActionResult Post([FromBody] AuthenticateRequest request)
         {
             try
             {
                 AuthenticateResponse response = new AuthenticateResponse();
 
                 bool credenciaisValidas = false;
-                if (usuario != null && !String.IsNullOrWhiteSpace(usuario.UserID))
+                if (request != null && !String.IsNullOrWhiteSpace(request.UserLogin))
                 {
-                    var usuarioBase = usersDAO.Find(usuario.UserID);
-                    credenciaisValidas = (usuarioBase != null &&
-                        usuario.UserID == usuarioBase.UserID &&
-                        usuario.AccessKey == usuarioBase.AccessKey);
+                    var usuarioAuth = _authenticateRepository.GetAuth(request);
+                    credenciaisValidas = (usuarioAuth != null &&
+                        request.UserLogin == usuarioAuth.UserLogin);
                 }
 
                 if (credenciaisValidas)
                 {
                     ClaimsIdentity identity = new ClaimsIdentity(
-                        new GenericIdentity(usuario.UserID, "Login"),
+                        new GenericIdentity(request.UserLogin, "Login"),
                         new[] {
-                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
-                        new Claim(JwtRegisteredClaimNames.UniqueName, usuario.UserID)
+                            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
+                            new Claim(JwtRegisteredClaimNames.UniqueName, request.UserLogin)
                         }
                     );
 
                     DateTime dataCriacao = DateTime.Now;
                     DateTime dataExpiracao = dataCriacao +
-                        TimeSpan.FromSeconds(tokenConfigurations.Seconds);
+                        TimeSpan.FromSeconds(_tokenConfiguration.Seconds);
 
                     var handler = new JwtSecurityTokenHandler();
                     var securityToken = handler.CreateToken(new SecurityTokenDescriptor
                     {
-                        Issuer = tokenConfigurations.Issuer,
-                        Audience = tokenConfigurations.Audience,
-                        SigningCredentials = signingConfigurations.SigningCredentials,
+                        Issuer = _tokenConfiguration.Issuer,
+                        Audience = _tokenConfiguration.Audience,
+                        SigningCredentials = _signingConfigurations.SigningCredentials,
                         Subject = identity,
                         NotBefore = dataCriacao,
                         Expires = dataExpiracao

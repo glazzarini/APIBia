@@ -12,13 +12,13 @@ namespace APIBia.AutoMapper
     {
         public LoginMapping()
         {
-            CreateMap<Login, LoginResponse>()
-                .ForMember(dest => dest.UserID, opt => opt.MapFrom(src => src.ID_LOGIN))
-                .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.PASSWORD))
-                .ForMember(dest => dest.UserLogin, opt => opt.MapFrom(src => src.USER_LOGIN))
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.NAME))
-                .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => src.CREATE_DATE))
-                .ForMember(dest => dest.Active, opt => opt.MapFrom(src => src.ACTIVE));
+            CreateMap<LoginEntity, LoginResponse>()
+                .ForMember(dest => dest.UserID, opt => opt.MapFrom(src => src.LoginId))
+                .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password))
+                .ForMember(dest => dest.UserLogin, opt => opt.MapFrom(src => src.UserLogin))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => src.CreateDate))
+                .ForMember(dest => dest.Active, opt => opt.MapFrom(src => src.Ativo));
         }
     }
 }

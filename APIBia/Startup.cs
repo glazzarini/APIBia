@@ -34,8 +34,8 @@ namespace APIBia
             // Registra todos os Mappgins configurados
             AutoMapperConfig.RegisterMappings();
 
-            services.AddTransient<AuthenticateDAO>();
-            services.AddTransient<LoginDAO>();
+            services.AddTransient<AuthenticateRepository>();
+            services.AddTransient<LoginRepository>();
 
             var signingConfigurations = new SigningConfigurations();
             services.AddSingleton(signingConfigurations);
@@ -95,6 +95,8 @@ namespace APIBia
                     { "Bearer", Enumerable.Empty<string>() },
                 });
             });
+
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -105,6 +107,7 @@ namespace APIBia
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors(option => option.AllowAnyOrigin());
             app.UseMvc();
             app.UseSwagger();
             app.UseSwaggerUI(c =>

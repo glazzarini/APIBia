@@ -8,8 +8,8 @@ namespace APIBia.Application.Contracts
     public class AuthenticateRequest
     {
         [Required]
-        public string UserID { get; set; }
+        public string UserLogin { get; set; }
         [Required]
-        public string AccessKey { get; set; }
+        public string Password { get; set; }
     }
 }

@@ -27,23 +27,23 @@ namespace APIBia.Controllers
         /// <param name="loginDAO"></param>
         /// <returns>retorna dados do usuário logado</returns>
         [Authorize("Bearer")]
-        [HttpPost]        
+        [HttpGet]        
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         [ProducesResponseType(typeof(LoginResponse), (int)HttpStatusCode.OK)]
-        public IActionResult Get([FromBody] LoginRequest request, [FromServices] LoginDAO loginDAO)
+        public IActionResult Get([FromQuery] LoginRequest request, [FromServices] LoginRepository loginDAO)
         {
             try
             {
                 bool validaLogin = false; 
                 if (request != null && (!string.IsNullOrEmpty(request.UserLogin) || !string.IsNullOrEmpty(request.Password)))
                 {
-                    var Login = loginDAO.Find(request);
+                    var Login = loginDAO.GetAuth(request);
 
                     validaLogin = Login != null &&
-                                  Login.USER_LOGIN.Equals(request.UserLogin) &&
-                                  Login.PASSWORD.Equals(request.Password);
+                                  Login.UserLogin.Equals(request.UserLogin) &&
+                                  Login.Password.Equals(request.Password);
 
                     if (validaLogin)
                     {
