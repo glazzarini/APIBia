@@ -16,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
 using APIBia.AutoMapper;
+using APIBia.Application.Service;
 
 namespace APIBia
 {
@@ -36,6 +37,7 @@ namespace APIBia
 
             services.AddTransient<AuthenticateRepository>();
             services.AddTransient<LoginRepository>();
+            services.AddSingleton(typeof(AuthService));
 
             var signingConfigurations = new SigningConfigurations();
             services.AddSingleton(signingConfigurations);

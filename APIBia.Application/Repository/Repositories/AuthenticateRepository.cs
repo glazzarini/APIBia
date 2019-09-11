@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Data.SqlClient;
 using Dapper;
+using System.Threading.Tasks;
 
 namespace APIBia.Application.Repository.Repositories
 {
@@ -19,12 +20,12 @@ namespace APIBia.Application.Repository.Repositories
             _configuration = configuration;
         }
 
-        public LoginEntity GetAuth(AuthenticateRequest request)
+        public async Task<LoginEntity> GetAuth(AuthenticateRequest request)
         {
             using (MySqlConnection conexao = new MySqlConnection(
                 _configuration.GetConnectionString("DefaultConnection")))
             {
-                return conexao.QueryFirstOrDefault<LoginEntity>(
+                return await conexao.QueryFirstOrDefaultAsync<LoginEntity>(
                     @"SELECT * FROM login 
                       WHERE userLogin = @UserLogin AND password = @Password;", new { request.UserLogin, request.Password });
             }
